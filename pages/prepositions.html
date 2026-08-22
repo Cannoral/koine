@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="ru" data-bs-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Предлоги · тренажёр</title>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+<link href="../assets/app.css" rel="stylesheet">
+<script src="../assets/theme.js"></script>
+</head>
+<body class="bg-body-tertiary">
+
+<nav class="navbar bg-body border-bottom sticky-top">
+  <div class="container-lg">
+    <a class="navbar-brand mb-0 h1 fs-6 text-decoration-none" href="../index.html">← Темы</a>
+    <span class="fw-semibold text-truncate ms-2">Предлоги</span>
+    <button id="themeToggle" class="btn btn-sm btn-outline-secondary ms-2" type="button" aria-label="Сменить тему">🌗</button>
+  </div>
+</nav>
+
+<main class="container-lg py-3 py-md-4" style="max-width: 40rem;">
+
+  <section id="intro">
+    <h1 class="h4 mb-1">Предлоги <span class="greek text-secondary">ἐν, εἰς, ὑπό</span></h1>
+    <p class="text-secondary small mb-3">уроки 3, 5, 23 · 28 карточек в колоде</p>
+
+    <div class="card shadow-sm mb-3">
+      <div class="card-body">
+        <h2 class="h6 text-uppercase text-secondary">Что спрашивается</h2>
+        <p class="mb-3">Показывается предлог и его значение — например <span class="greek">ὑπό</span> «кем (агент при пассиве)». Нужно назвать <strong>падеж</strong>, которым он управляет именно в этом значении.</p>
+
+        <h2 class="h6 text-uppercase text-secondary">Варианты ответа</h2>
+        <ul class="mb-3">
+          <li>Какой падеж: <em>Gen. · Dat. · Acc.</em></li>
+        </ul>
+
+        <h2 class="h6 text-uppercase text-secondary">Сколько вопросов</h2>
+        <p class="mb-3">20 карточек, вытянутых случайно из 28. Каждый запуск даёт новый набор.</p>
+
+        <div class="alert alert-secondary small mb-0">Общий смысл падежа при предлоге: Gen. — «от, движение прочь», Dat. — «в, при, покой», Acc. — «к, движение куда». Предлоги с двумя-тремя падежами (<span class="greek">διά, κατά, μετά, περί, ὑπέρ, ὑπό, παρά, ἐπί</span>) меняют значение вместе с падежом — потому значение и дано в вопросе.</div>
+      </div>
+    </div>
+
+    <div class="d-grid gap-2">
+      <button id="btnStart" class="btn btn-primary btn-lg" type="button">Начать</button>
+      <a class="btn btn-outline-secondary" href="../articles/prepositions.html">Грамматическая таблица</a>
+    </div>
+  </section>
+
+  <section id="quiz" class="d-none"></section>
+  <section id="result" class="d-none"></section>
+</main>
+
+<script src="../data/prepositions.js"></script>
+<script src="../assets/trainer.js"></script>
+<script>Trainer.start({ data: KOINE_DATA_PREPOSITIONS, total: 20 });</script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

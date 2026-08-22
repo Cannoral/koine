@@ -1,0 +1,75 @@
+/* Общие стили тренажёра койне. Подключается и главной страницей, и уроками. */
+
+:root { --topic-radius: .75rem; }
+
+body {
+  min-height: 100vh;
+  padding-bottom: env(safe-area-inset-bottom);
+  -webkit-text-size-adjust: 100%;
+}
+
+.greek { font-family: "GFS Didot", "Palatino Linotype", "Times New Roman", serif; }
+
+/* ---------- главная: список тем ---------- */
+
+.topic-link {
+  display: flex;
+  align-items: center;
+  gap: .75rem;
+  min-height: 3.5rem;
+  padding: .875rem 1rem;
+  border-radius: var(--topic-radius);
+  text-decoration: none;
+}
+.topic-link:active { transform: scale(.99); }
+.topic-num {
+  flex: 0 0 2rem;
+  height: 2rem;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  font-size: .8rem;
+  font-weight: 600;
+  background: var(--bs-secondary-bg);
+  color: var(--bs-secondary-color);
+}
+.topic-body { min-width: 0; }
+.topic-title { font-weight: 600; line-height: 1.25; }
+.topic-sub { font-size: .8125rem; color: var(--bs-secondary-color); }
+.topic-link .bi-chev { margin-left: auto; opacity: .4; flex: 0 0 auto; }
+@media (min-width: 576px) { .topic-title { font-size: 1.0625rem; } }
+
+/* ---------- тренажёр ---------- */
+
+.quiz-prompt {
+  font-size: clamp(3.25rem, 20vw, 5.5rem);
+  line-height: 1.1;
+  font-weight: 500;
+}
+.quiz-note { font-size: .9375rem; }
+
+/* прогресс: кружочки по числу вопросов */
+.dots { display: flex; flex-wrap: wrap; gap: .4rem; justify-content: center; }
+.dot {
+  width: 1.15rem; height: 1.15rem;
+  padding: 0; border-radius: 50%;
+  border: 2px solid var(--bs-border-color);
+  background: transparent;
+  transition: background-color .15s, border-color .15s;
+}
+.dot.ok  { background: var(--bs-success); border-color: var(--bs-success); }
+.dot.bad { background: var(--bs-danger);  border-color: var(--bs-danger); }
+.dot.now { outline: 2px solid var(--bs-primary); outline-offset: 2px; }
+
+/* кнопки выбора — крупные зоны нажатия */
+.choice-row { display: grid; gap: .5rem; }
+.choice-row.c1 { grid-template-columns: 1fr; }
+.choice-row.c2 { grid-template-columns: repeat(2, 1fr); }
+.choice-row.c3 { grid-template-columns: repeat(3, 1fr); }
+.choice-row.c4 { grid-template-columns: repeat(4, 1fr); }
+.choice-row.c5 { grid-template-columns: repeat(5, 1fr); }
+.choice-row.c6 { grid-template-columns: repeat(3, 1fr); }
+@media (min-width: 576px) { .choice-row.c6 { grid-template-columns: repeat(6, 1fr); } }
+.choice { min-height: 3rem; font-size: 1rem; font-weight: 500; }
+@media (max-width: 360px) { .choice { font-size: .9rem; padding-left: .25rem; padding-right: .25rem; } }
+.choice-label { font-size: .8125rem; text-transform: uppercase; letter-spacing: .03em; }
