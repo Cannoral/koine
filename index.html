@@ -22,8 +22,8 @@
 <main class="container-lg py-3 py-md-4" style="max-width: 46rem;">
 
   <p class="text-secondary small mb-3">
-    Уроки 1–24: настоящее время всех залогов, три склонения, причастия, инфинитив.
-    Выберите тему для тренировки.
+    Уроки 1–32: настоящее время всех залогов, три склонения, причастия, инфинитив,
+    аорист и будущее во всех залогах. Выберите тему для тренировки.
   </p>
 
   <!-- Имя -->
@@ -43,7 +43,7 @@
   <div class="list-group shadow-sm" id="group-final"></div>
 
   <p class="text-secondary small mt-4 mb-0">
-    Материал по урокам 25–50 (аорист, будущее, перфект, сослагательное) пока не разбирается.
+    Материал по урокам 33–50 (перфект, плюсквамперфект, сослагательное, оптатив, императив) пока не разбирается.
   </p>
 </main>
 
@@ -62,8 +62,13 @@ const TOPICS = [
   { g:'verb', file:'pages/verbs-midpass.html',      title:'Средний / пассивный залог',         sub:'-ομαι, -ῃ, -εται…; агент ὑπό + Gen.',   lessons:'уроки 17–18, 21' },
   { g:'verb', file:'pages/participles.html',        title:'Причастия',                         sub:'λύων, λύουσα, λῦον; λυόμενος',          lessons:'уроки 19–20' },
   { g:'verb', file:'pages/infinitive.html',         title:'Инфинитив',                         sub:'λύειν, λύεσθαι; Acc. cum inf.',         lessons:'урок 22' },
+  { g:'verb', file:'pages/aorist-active.html',      title:'Аорист: активный залог',            sub:'ἔλυσα, εἶπον — слабый и сильный',       lessons:'уроки 25–26' },
+  { g:'verb', file:'pages/aorist-midpass.html',     title:'Аорист: средний и пассивный',       sub:'ἐλυσάμην ↔ ἐλύθην — залоги различаются', lessons:'урок 27' },
+  { g:'verb', file:'pages/future.html',             title:'Будущее время',                     sub:'λύσω, λύσομαι, λυθήσομαι',              lessons:'уроки 28–29' },
+  { g:'verb', file:'pages/irregular-verbs.html',    title:'Неправильные глаголы',              sub:'λέγω/εἶπον/ἐρῶ; ἔρχομαι/ἦλθον/ἐλεύσομαι', lessons:'урок 30' },
+  { g:'verb', file:'pages/participles-aorist.html', title:'Причастия аориста',                 sub:'λύσας, λυσάμενος, λυθείς',              lessons:'урок 31' },
   { g:'misc', file:'pages/prepositions.html',       title:'Предлоги',                          sub:'управление падежами',                   lessons:'уроки 3, 5, 23' },
-  { g:'final', file:'pages/homoforms.html',         title:'Омоформы',                          sub:'λύουσι(ν), λύεται, λύῃ, -ας, -ος, -εως', lessons:'уроки 2–24' },
+  { g:'final', file:'pages/homoforms.html',         title:'Омоформы',                          sub:'λύουσι(ν), λύῃ, -ας, -ος, -εως; ἔλυσας ↔ λύσας', lessons:'уроки 2–32' },
 ];
 
 const chevron = '<svg class="bi-chev" width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 3l5 5-5 5"/></svg>';
