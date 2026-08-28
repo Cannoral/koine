@@ -26,6 +26,10 @@
     аорист и будущее во всех залогах. Выберите тему для тренировки.
   </p>
 
+  <!-- Чтение -->
+  <h2 class="h6 text-uppercase text-secondary fw-semibold mt-4 mb-2 ps-1">Чтение</h2>
+  <div class="list-group shadow-sm" id="group-read"></div>
+
   <!-- Имя -->
   <h2 class="h6 text-uppercase text-secondary fw-semibold mt-4 mb-2 ps-1">Имя</h2>
   <div class="list-group shadow-sm" id="group-noun"></div>
@@ -71,7 +75,27 @@ const TOPICS = [
   { g:'final', file:'pages/homoforms.html',         title:'Омоформы',                          sub:'λύουσι(ν), λύῃ, -ας, -ος, -εως; ἔλυσας ↔ λύσας', lessons:'уроки 2–32' },
 ];
 
+const READING = {
+  file: 'pages/matthew.html',
+  icon: '\u{1F4D6}',
+  title: 'Чтение евангелия от Матфея',
+  sub: 'греческий текст и перевод построчно · 28 глав',
+};
+
 const chevron = '<svg class="bi-chev" width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 3l5 5-5 5"/></svg>';
+
+{
+  const el = document.createElement('a');
+  el.href = READING.file;
+  el.className = 'list-group-item list-group-item-action topic-link';
+  el.innerHTML =
+    '<span class="topic-num topic-icon">' + READING.icon + '</span>' +
+    '<span class="topic-body">' +
+      '<span class="d-block topic-title">' + READING.title + '</span>' +
+      '<span class="d-block topic-sub text-truncate">' + READING.sub + '</span>' +
+    '</span>' + chevron;
+  document.getElementById('group-read').appendChild(el);
+}
 
 TOPICS.forEach((t, i) => {
   const el = document.createElement('a');

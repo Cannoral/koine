@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="ru" data-bs-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Евангелие от Матфея · чтение</title>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+<link href="../assets/app.css" rel="stylesheet">
+<script src="../assets/theme.js"></script>
+</head>
+<body class="bg-body-tertiary">
+
+<nav class="navbar bg-body border-bottom sticky-top">
+  <div class="container-lg">
+    <a class="navbar-brand mb-0 h1 fs-6 text-decoration-none" href="matthew.html">← Главы</a>
+    <span class="fw-semibold text-truncate ms-2">Мф. <span data-t="ch"></span></span>
+    <button id="themeToggle" class="btn btn-sm btn-outline-secondary ms-2" type="button" aria-label="Сменить тему">🌗</button>
+  </div>
+</nav>
+
+<main class="container-lg py-3 py-md-4" style="max-width: 62rem;">
+
+  <div class="d-flex align-items-center flex-wrap gap-2 mb-1">
+    <h1 class="h4 mb-0">Глава <span data-t="ch"></span></h1>
+    <span id="chapterDone" class="badge text-bg-success d-none">прочитана</span>
+    <span class="ms-auto d-flex gap-2">
+      <button id="btnShowAll" class="btn btn-sm btn-outline-secondary" type="button">Показать все переводы</button>
+      <button id="btnReadChapter" class="btn btn-sm btn-outline-success" type="button">Прочитал главу</button>
+    </span>
+  </div>
+  <p class="text-secondary small mb-3">
+    Прочитано <strong data-t="done">0</strong> из <span data-t="count">0</span> ·
+    нажмите на номер стиха, чтобы отметить его прочитанным
+  </p>
+
+  <div class="card shadow-sm">
+    <div class="card-body py-1 px-3 px-md-4" id="verses">
+      <p class="text-secondary py-3 mb-0">Загрузка…</p>
+    </div>
+  </div>
+
+  <div class="d-flex justify-content-between gap-2 mt-3">
+    <a id="nav-prev" class="btn btn-outline-secondary" href="#">← Глава <span data-t="n"></span></a>
+    <a id="nav-next" class="btn btn-outline-secondary ms-auto" href="#">Глава <span data-t="n"></span> →</a>
+  </div>
+</main>
+
+<script src="../data/matthew/index.js"></script>
+<script src="../assets/reader.js"></script>
+<script>Reader.read();</script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
