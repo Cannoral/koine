@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="ru" data-bs-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Перфект · тренажёр</title>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+<link href="../assets/app.css" rel="stylesheet">
+<script src="../assets/theme.js"></script>
+</head>
+<body class="bg-body-tertiary">
+
+<nav class="navbar bg-body border-bottom sticky-top">
+  <div class="container-lg">
+    <a class="navbar-brand mb-0 h1 fs-6 text-decoration-none" href="../index.html">← Темы</a>
+    <span class="fw-semibold text-truncate ms-2">Перфект</span>
+    <button id="themeToggle" class="btn btn-sm btn-outline-secondary ms-2" type="button" aria-label="Сменить тему">🌗</button>
+  </div>
+</nav>
+
+<main class="container-lg py-3 py-md-4" style="max-width: 40rem;">
+
+  <section id="intro">
+    <h1 class="h4 mb-1">Перфект <span class="greek text-secondary">λέλυκα, γέγραπται</span></h1>
+    <p class="text-secondary small mb-3">уроки 33–34 · 78 карточек в колоде</p>
+
+    <div class="card shadow-sm mb-3">
+      <div class="card-body">
+        <h2 class="h6 text-uppercase text-secondary">Что спрашивается</h2>
+        <p class="mb-3">Показывается личная форма перфекта — например <span class="greek">πεποιήκατε</span>. Нужно определить <strong>залог</strong>, <strong>лицо</strong> и <strong>число</strong>.</p>
+
+        <h2 class="h6 text-uppercase text-secondary">Варианты ответа</h2>
+        <ul class="mb-3">
+          <li>Залог: <em>актив · ср./пасс.</em></li>
+          <li>Лицо: <em>1 л. · 2 л. · 3 л.</em></li>
+          <li>Число: <em>ед. ч. · мн. ч.</em></li>
+        </ul>
+
+        <h2 class="h6 text-uppercase text-secondary">Сколько вопросов</h2>
+        <p class="mb-3">20 карточек, вытянутых случайно из 78. Каждый запуск даёт новый набор.</p>
+
+        <div class="alert alert-secondary small mb-0">Перфект узнаётся по <strong>удвоению</strong> в начале слова: <span class="greek">λέ-λυκα, πε-ποίηκα, γέ-γραφα</span>. Залог виден по окончаниям: <span class="greek">-κα, -κας, -κε(ν)</span> — актив, <span class="greek">-μαι, -σαι, -ται</span> — средний/пассивный. Суффикса <span class="greek">-κ-</span> у части глаголов нет (<span class="greek">γέγραφα</span> — сильный перфект), но удвоение есть всегда. Средний и пассивный, как и в praesens, по форме не различаются — вариант ответа один. Приращения <span class="greek">ἐ-</span> у перфекта нет: с ним это уже плюсквамперфект.</div>
+      </div>
+    </div>
+
+    <div class="d-grid gap-2">
+      <button id="btnStart" class="btn btn-primary btn-lg" type="button">Начать</button>
+      <a class="btn btn-outline-secondary" href="../articles/perfect.html">Грамматическая таблица</a>
+    </div>
+  </section>
+
+  <section id="quiz" class="d-none"></section>
+  <section id="result" class="d-none"></section>
+</main>
+
+<script src="../data/perfect.js"></script>
+<script src="../assets/trainer.js"></script>
+<script>Trainer.start({ data: KOINE_DATA_PERFECT, total: 20 });</script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

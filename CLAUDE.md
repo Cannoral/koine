@@ -16,13 +16,19 @@ The user is a Russian-speaking learner working through the course sequentially. 
 | File | Role |
 |---|---|
 | `Курс древнегреческого языка — уроки 1-50.docx` | **Source of truth.** The full 50-lesson course, scraped from [sibwiki.org](https://sibwiki.org). Read-only input; everything else is derived from it. |
-| `cheatsheet_lessons_1-24.md` | Condensed paradigm tables, **despite the filename now covers lessons 1–32**: declensions, verb endings (praesens **and aorist/future**), participles (praesens **and aorist**), infinitive, prepositions. Filename kept as-is to avoid touching the trainer tooling (`tools/mdconv.py`, `tools/gen_pages.py`) that reads it by this exact name; rename only as a deliberate follow-up. |
+| `cheatsheet_lessons_1-32.md` | Condensed paradigm tables, **despite the filename now covers lessons 1–44**: declensions, verb endings (praesens, aorist/future, **perfect/pluperfect**), **all four moods**, participles (praesens and aorist), infinitive (all three stems), prepositions, **syntax of lessons 41–44**. Filename lags the content on purpose — `tools/mdconv.py` reads it by this exact name; rename only as a deliberate follow-up, updating that path with it. |
 | `koine_vocab_lessons_1-24.tsv` | Anki import deck — 204 entries, lessons 1–23. Covers lessons 1–32's grammar too: aorist/future are new *forms* of already-listed verbs, not new lemmas. |
 | `exercise_lessons_1-11.md` | Translation exercise, **already attempted and graded**. |
 | `exercise_lessons_11-24.md` | Translation exercise, 108 sentences; parts α΄–ζ΄ graded, parts η΄–ι΄ (11 76–108) not yet attempted. |
 | `exercise_lessons_25-32.md` | Translation exercise, 74 sentences, aorist/future/aorist-participle block, **not yet attempted**. |
 
-Derived material covers **lessons 1–32** (present tense in all three voices, three declensions, participles, infinitive, plus aorist and future in all three voices and the aorist participle). Lessons 33–50 (perfect, pluperfect, subjunctive, optative, imperative, …) exist only in the .docx. Do not use grammar from beyond lesson 32 in exercises or the cheatsheet unless asked. The **trainer site now covers the same 1–32 range**: five decks for the aorist/future block were added on top of the original fifteen topics (see `tools/gen_aorist.py`).
+Coverage is uneven on purpose, and the three halves are at different lessons:
+
+- **The cheatsheet covers lessons 1–44** — through perfect/pluperfect (33–35), the subjunctive, optative and imperative (36–39), and the syntax block: Acc. cum inf., conditional periods, purpose/result clauses, gerund and gerundive (41–44). It also carries a short supplementary imperfect table, which the course itself never teaches but lesson 42 needs.
+- **The vocabulary deck and the exercises stop at lesson 32.** Do not use grammar from beyond lesson 32 in exercises unless asked.
+- **The trainer site covers 1–39 and 44**: seven decks for perfect/pluperfect, the three moods, a mixed mood-recognition deck and gerund/gerundive (`tools/gen_perfect.py`, `tools/gen_moods.py`) on top of the earlier nineteen. Lessons 40–43 (Acc. cum inf., conditional periods, purpose/result clauses) are in the cheatsheet but have no deck — those sections are not in the `T` dict of `tools/gen_pages.py`, so they generate no article either.
+
+Lessons 45–50 are reading practice and exist only in the .docx.
 
 `exercise_lessons_1-11.md:5` references `koine_vocab_lessons_1-11.tsv`, which does not exist — it was folded into the 1–24 deck.
 
@@ -30,7 +36,7 @@ The trainer site lives alongside it:
 
 | Path | Role |
 |---|---|
-| `index.html` | Entry point: the 20 topics, grouped имя / глагол / служебные слова / итог. |
+| `index.html` | Entry point: the 24 topics, grouped имя / глагол / служебные слова / итог, plus the reading link. Topic list is hand-maintained here — a new deck must be added to `TOPICS` by hand. |
 | `assets/trainer.js` | The engine — every trainer runs on it. Contract below. |
 | `assets/app.css`, `assets/theme.js` | Shared styles and the light/dark toggle (choice kept in `localStorage`). |
 | `data/*.js` | One deck per topic: what is asked and every acceptable answer. |
@@ -87,12 +93,14 @@ python3 tools/gen_nouns.py        # data/nouns-*.js
 python3 tools/gen_adj_pron.py     # data/adjectives.js, pronouns.js, adjective-position.js, eimi.js
 python3 tools/gen_verbs.py        # data/verbs-*.js, participles.js, infinitive.js, prepositions.js, homoforms.js
 python3 tools/gen_aorist.py       # data/aorist-*.js, future.js, irregular-verbs.js, participles-aorist.js
+python3 tools/gen_perfect.py      # data/perfect.js, pluperfect.js
+python3 tools/gen_moods.py        # data/conjunctive.js, optative.js, imperative.js, moods.js, gerundive.js
 node    tools/dump.js             # data/*.js → tools/decks.json (метаданные для страниц)
 python3 tools/gen_pages.py        # pages/ и articles/
 node    tools/validate.js         # проверка всех колод
 ```
 
-Articles are built from `cheatsheet_lessons_1-24.md` by `tools/mdconv.py` — the tables are never retyped, so the site cannot drift from the cheatsheet. **Edit the cheatsheet, then regenerate**; direct edits to `articles/*.html` are overwritten. `pages/article.html` and `articles/article.html` are the exception — they were written by hand before the generator existed and are not in `T`.
+Articles are built from `cheatsheet_lessons_1-32.md` by `tools/mdconv.py` — the tables are never retyped, so the site cannot drift from the cheatsheet. **Edit the cheatsheet, then regenerate**; direct edits to `articles/*.html` are overwritten. `pages/article.html` and `articles/article.html` are the exception — they were written by hand before the generator existed and are not in `T`.
 
 Regeneration is byte-for-byte reproducible: running everything on an unchanged workspace leaves no diff.
 
