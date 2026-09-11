@@ -24,9 +24,9 @@ The user is a Russian-speaking learner working through the course sequentially. 
 
 Coverage is uneven on purpose, and the three halves are at different lessons:
 
-- **The cheatsheet covers lessons 1–44** — through perfect/pluperfect (33–35), the subjunctive, optative and imperative (36–39), and the syntax block: Acc. cum inf., conditional periods, purpose/result clauses, gerund and gerundive (41–44). It also carries a short supplementary imperfect table, which the course itself never teaches but lesson 42 needs.
+- **The cheatsheet covers lessons 1–44** — through perfect/pluperfect (33–35), the subjunctive, optative and imperative (36–39), and the syntax block: Acc. cum inf., conditional periods, purpose/result clauses, gerund and gerundive (41–44). It also carries an imperfect section: the course has no lesson on it, but gives it in the summary tables of lessons 32 and 40 and uses it in lesson 42 and the readings.
 - **The vocabulary deck and the exercises stop at lesson 32.** Do not use grammar from beyond lesson 32 in exercises unless asked.
-- **The trainer site covers 1–39 and 44**: seven decks for perfect/pluperfect, the three moods, a mixed mood-recognition deck and gerund/gerundive (`tools/gen_perfect.py`, `tools/gen_moods.py`) on top of the earlier nineteen. Lessons 40–43 (Acc. cum inf., conditional periods, purpose/result clauses) are in the cheatsheet but have no deck — those sections are not in the `T` dict of `tools/gen_pages.py`, so they generate no article either.
+- **The trainer site covers lessons 1–44** plus the imperfect. `tools/gen_perfect.py` holds perfect, pluperfect and imperfect; `tools/gen_moods.py` the three moods, a mixed mood-recognition deck, infinitives of all stems (41), one clause-recognition deck for 41–43 (`clauses`: ὅτι / Acc. cum inf., conditional types 1–4, ἵνα, ὥστε) and gerund/gerundive (44). `homoforms` spans 2–44 and asks the mood of a finite form. Lesson 40 is a review test and has no deck.
 
 Lessons 45–50 are reading practice and exist only in the .docx.
 
@@ -36,7 +36,7 @@ The trainer site lives alongside it:
 
 | Path | Role |
 |---|---|
-| `index.html` | Entry point: the 24 topics, grouped имя / глагол / служебные слова / итог, plus the reading link. Topic list is hand-maintained here — a new deck must be added to `TOPICS` by hand. |
+| `index.html` | Entry point: the topics, grouped имя / глагол / служебные слова / итог, plus the reading link. Topic list is hand-maintained here — a new deck must be added to `TOPICS` by hand. |
 | `assets/trainer.js` | The engine — every trainer runs on it. Contract below. |
 | `assets/app.css`, `assets/theme.js` | Shared styles and the light/dark toggle (choice kept in `localStorage`). |
 | `data/*.js` | One deck per topic: what is asked and every acceptable answer. |
@@ -93,8 +93,8 @@ python3 tools/gen_nouns.py        # data/nouns-*.js
 python3 tools/gen_adj_pron.py     # data/adjectives.js, pronouns.js, adjective-position.js, eimi.js
 python3 tools/gen_verbs.py        # data/verbs-*.js, participles.js, infinitive.js, prepositions.js, homoforms.js
 python3 tools/gen_aorist.py       # data/aorist-*.js, future.js, irregular-verbs.js, participles-aorist.js
-python3 tools/gen_perfect.py      # data/perfect.js, pluperfect.js
-python3 tools/gen_moods.py        # data/conjunctive.js, optative.js, imperative.js, moods.js, gerundive.js
+python3 tools/gen_perfect.py      # data/perfect.js, pluperfect.js, imperfect.js
+python3 tools/gen_moods.py        # data/conjunctive.js, optative.js, imperative.js, moods.js, gerundive.js, infinitive-tenses.js, clauses.js
 node    tools/dump.js             # data/*.js → tools/decks.json (метаданные для страниц)
 python3 tools/gen_pages.py        # pages/ и articles/
 node    tools/validate.js         # проверка всех колод

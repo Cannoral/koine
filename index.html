@@ -22,9 +22,9 @@
 <main class="container-lg py-3 py-md-4" style="max-width: 46rem;">
 
   <p class="text-secondary small mb-3">
-    Уроки 1–44: три склонения, причастия и инфинитив; настоящее время, аорист, будущее,
+    Уроки 1–44: три склонения, причастия и инфинитив; настоящее время, имперфект, аорист, будущее,
     перфект и плюсквамперфект во всех залогах; сослагательное, желательное и повелительное
-    наклонения. Выберите тему для тренировки.
+    наклонения; косвенная речь, условные периоды, цель и следствие. Выберите тему для тренировки.
   </p>
 
   <!-- Чтение -->
@@ -48,8 +48,7 @@
   <div class="list-group shadow-sm" id="group-final"></div>
 
   <p class="text-secondary small mt-4 mb-0">
-    Уроки 40–43 (косвенная речь, условные периоды, придаточные цели и следствия) есть в шпаргалке,
-    но отдельных тренажёров пока не имеют. Уроки 45–50 — чтение.
+    Уроки 45–50 — чтение.
   </p>
 </main>
 
@@ -73,15 +72,18 @@ const TOPICS = [
   { g:'verb', file:'pages/future.html',             title:'Будущее время',                     sub:'λύσω, λύσομαι, λυθήσομαι',              lessons:'уроки 28–29' },
   { g:'verb', file:'pages/irregular-verbs.html',    title:'Неправильные глаголы',              sub:'λέγω/εἶπον/ἐρῶ; ἔρχομαι/ἦλθον/ἐλεύσομαι', lessons:'урок 30' },
   { g:'verb', file:'pages/participles-aorist.html', title:'Причастия аориста',                 sub:'λύσας, λυσάμενος, λυθείς',              lessons:'урок 31' },
-  { g:'verb', file:'pages/perfect.html',            title:'Перфект',                           sub:'λέλυκα, λέλυμαι — удвоение и результат', lessons:'уроки 33–34' },
+  { g:'verb', file:'pages/imperfect.html',          title:'Имперфект',                         sub:'ἔλυον, ἐποίουν, ἦν — длительное прошедшее', lessons:'уроки 32, 40, 42' },
+  { g:'verb', file:'pages/perfect.html',           title:'Перфект',                           sub:'λέλυκα, λέλυμαι — удвоение и результат', lessons:'уроки 33–34' },
   { g:'verb', file:'pages/pluperfect.html',         title:'Плюсквамперфект',                   sub:'ἐλελύκειν — удвоение и приращение',     lessons:'урок 35' },
   { g:'verb', file:'pages/conjunctive.html',        title:'Сослагательное наклонение',         sub:'ἵνα λύσῃ, ἐὰν πιστεύσω',                lessons:'уроки 36–37' },
   { g:'verb', file:'pages/optative.html',           title:'Оптатив',                           sub:'λύοιμι, εἴη, μὴ γένοιτο',               lessons:'урок 38' },
   { g:'verb', file:'pages/imperative.html',         title:'Повелительное наклонение',          sub:'λῦε ↔ λῦσον; ἐλθέ, εἰπέ',               lessons:'урок 39' },
-  { g:'verb', file:'pages/gerundive.html',          title:'Герундий и герундив',               sub:'εἰς τὸ λύειν; ἐμοὶ λυτέος ἐστίν',       lessons:'урок 44' },
+  { g:'verb', file:'pages/infinitive-tenses.html',  title:'Инфинитив: все основы',             sub:'λῦσαι, λυθῆναι, λύσειν, λελυκέναι',     lessons:'урок 41' },
+  { g:'verb', file:'pages/gerundive.html',         title:'Герундий и герундив',               sub:'εἰς τὸ λύειν; ἐμοὶ λυτέος ἐστίν',       lessons:'урок 44' },
   { g:'misc', file:'pages/prepositions.html',       title:'Предлоги',                          sub:'управление падежами',                   lessons:'уроки 3, 5, 23' },
+  { g:'misc', file:'pages/clauses.html',            title:'Придаточные: узнавание',            sub:'ὅτι, Acc. cum inf.; εἰ / ἐάν; ἵνα, ὥστε', lessons:'уроки 41–43' },
   { g:'final', file:'pages/moods.html',             title:'Наклонения: узнавание',             sub:'одна парадигма λύω во всех наклонениях', lessons:'уроки 36–39' },
-  { g:'final', file:'pages/homoforms.html',         title:'Омоформы',                          sub:'λύουσι(ν), λύῃ, -ας, -ος, -εως; ἔλυσας ↔ λύσας', lessons:'уроки 2–32' },
+  { g:'final', file:'pages/homoforms.html',         title:'Омоформы',                          sub:'λύουσι(ν), -ας, -ος; ἔλυσας ↔ λύσας; λύσω ↔ ἵνα λύσω', lessons:'уроки 2–44' },
 ];
 
 const READING = {
