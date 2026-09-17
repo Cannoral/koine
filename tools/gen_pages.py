@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-import sys, json, os
+import sys, json, os, random
 HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, HERE)
 from mdconv import sections, render
@@ -262,4 +262,61 @@ for tid, t in T.items():
     intro(tid, t, deck)
     table(tid, t, deck)
     print('%-22s pages/%s.html + articles/%s.html' % (tid, tid, tid))
-print('готово:', len(T) * 2, 'страниц')
+
+# ---------------- Страницы для запоминания (без тестов) ----------------
+def memo(fid, title, body, scripts=''):
+    page = (HEAD.format(title=title, back='../index.html', backlabel='← Темы', nav=title, width='46rem')
+            + '\n  <h1 class="h4 mb-3">%s</h1>\n' % title + body
+            + '\n  <div class="d-grid gap-2">\n'
+              '    <a class="btn btn-outline-secondary" href="../index.html">На главную</a>\n'
+              '  </div>\n' + FOOT.format(scripts=scripts))
+    open(os.path.join(ROOT, 'pages', fid + '.html'), 'w', encoding='utf8').write(page)
+    print('%-22s pages/%s.html' % (fid, fid))
+
+VERBS = sections(os.path.join(ROOT, 'verbs_irregular_deponent.md'))
+memo('irregular-table', 'Неправильные глаголы',
+     render('Основные формы', VERBS['Неправильные глаголы']))
+memo('deponents', 'Отложительные глаголы',
+     render('Deponentia', VERBS['Отложительные глаголы (deponentia)']))
+
+VOCAB = [l.split('\t')[:3] for l in open(os.path.join(ROOT, 'koine_vocab.tsv'), encoding='utf8').read().split('\n')
+         if l and not l.startswith('#')]
+random.Random(1).shuffle(VOCAB)   # порядок случайный, но одинаковый при каждой сборке
+memo('vocab', 'Лексика', '''
+  <p class="text-secondary small mb-3">{n} слов из колоды Anki. Порядок случайный, но постоянный.</p>
+  <div class="card shadow-sm mb-3"><div class="list-group list-group-flush" id="words"></div></div>
+  <div class="d-flex align-items-center justify-content-between mb-3">
+    <button id="prev" class="btn btn-outline-primary" type="button">← Назад</button>
+    <span id="pageNo" class="text-secondary small"></span>
+    <button id="next" class="btn btn-outline-primary" type="button">Вперёд →</button>
+  </div>
+'''.format(n=len(VOCAB)), '''<script>
+const VOCAB = %s;
+const PER = 10;
+const order = VOCAB;
+const pages = Math.ceil(order.length / PER);
+const esc = s => s.replace(/&/g, '&amp;').replace(/</g, '&lt;');
+let page = 0;
+function show() {
+  document.getElementById('words').innerHTML = order.slice(page * PER, (page + 1) * PER).map(([gr, ru, gram]) =>
+    '<div class="list-group-item d-flex align-items-start gap-3">' +
+      '<div class="greek fs-5 flex-grow-1" style="flex-basis:50%%">' + esc(gr) + '</div>' +
+      '<div style="flex-basis:50%%">' +
+        '<button class="btn btn-sm btn-outline-secondary" type="button">Показать перевод</button>' +
+        '<div class="d-none"><div>' + esc(ru) + '</div><div class="small text-secondary">' + esc(gram) + '</div></div>' +
+      '</div></div>').join('');
+  document.getElementById('pageNo').textContent = (page + 1) + ' / ' + pages;
+  document.getElementById('prev').disabled = page === 0;
+  document.getElementById('next').disabled = page === pages - 1;
+}
+document.getElementById('words').addEventListener('click', e => {
+  const b = e.target.closest('button');
+  if (b) { b.classList.add('d-none'); b.nextElementSibling.classList.remove('d-none'); }
+});
+document.getElementById('prev').onclick = () => { page--; show(); scrollTo(0, 0); };
+document.getElementById('next').onclick = () => { page++; show(); scrollTo(0, 0); };
+show();
+</script>
+''' % json.dumps(VOCAB, ensure_ascii=False))
+
+print('готово:', len(T) * 2 + 3, 'страниц')

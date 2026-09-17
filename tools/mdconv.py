@@ -5,9 +5,9 @@ import re, html, os
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 CHEAT = os.path.join(ROOT, 'cheatsheet_lessons_1-32.md')
 
-def sections():
+def sections(path=CHEAT):
     out, title, buf = {}, None, []
-    for line in open(CHEAT, encoding='utf8').read().split('\n'):
+    for line in open(path, encoding='utf8').read().split('\n'):
         if line.startswith('#'):
             if title: out[title] = buf
             title, buf = line.lstrip('#').strip(), []

@@ -1,10 +1,15 @@
 # -*- coding: utf-8 -*-
 """Сборка файлов data/*.js для тренажёров койне."""
-import json, collections, io, os
+import json, collections, io, os, unicodedata
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 CASES = ['N', 'G', 'D', 'A']
 NUMS  = ['sg', 'pl']
+
+def plain(s):
+    """снять ударение, сохранив придыхание: λύ → λυ"""
+    return unicodedata.normalize('NFC', ''.join(
+        ch for ch in unicodedata.normalize('NFD', s) if ch not in '\u0301\u0300\u0342'))
 
 def decl(stem, endings):
     """8 форм в порядке N/G/D/A sg, N/G/D/A pl."""
