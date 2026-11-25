@@ -97,6 +97,13 @@ const READING = {
   sub: 'греческий текст и перевод построчно · 28 глав',
 };
 
+const PARSE = {
+  file: 'pages/texts.html',
+  icon: '\u{270D}',
+  title: 'Разбор текстов',
+  sub: 'свои тексты · хранятся в этом браузере',
+};
+
 const MEMO = [
   { file:'pages/irregular-table.html', icon:'\u{1F4CB}', title:'Неправильные глаголы', sub:'praesens · aoristus · futurum · perfectum' },
   { file:'pages/deponents.html',       icon:'\u{1F4CB}', title:'Отложительные глаголы', sub:'deponentia: значение и важная форма' },
@@ -105,7 +112,7 @@ const MEMO = [
 
 const chevron = '<svg class="bi-chev" width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 3l5 5-5 5"/></svg>';
 
-[READING].concat(MEMO).forEach(R => {
+[READING, PARSE].concat(MEMO).forEach(R => {
   const el = document.createElement('a');
   el.href = R.file;
   el.className = 'list-group-item list-group-item-action topic-link';
@@ -115,7 +122,7 @@ const chevron = '<svg class="bi-chev" width="16" height="16" viewBox="0 0 16 16"
       '<span class="d-block topic-title">' + R.title + '</span>' +
       '<span class="d-block topic-sub text-truncate">' + R.sub + '</span>' +
     '</span>' + chevron;
-  document.getElementById(R === READING ? 'group-read' : 'group-memo').appendChild(el);
+  document.getElementById(R === READING || R === PARSE ? 'group-read' : 'group-memo').appendChild(el);
 });
 
 TOPICS.forEach((t, i) => {

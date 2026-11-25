@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="en" data-bs-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Text parsing</title>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+<link href="../assets/app.css" rel="stylesheet">
+<script src="../assets/theme.js"></script>
+<style>
+  #text .word { cursor: pointer; border-radius: .25rem; }
+  #text .word:hover { background: var(--bs-secondary-bg); }
+  #legend { display: flex; flex-wrap: wrap; gap: .5rem 1.5rem; }
+  #text { font-size: 1.75rem; line-height: 2.6; white-space: pre-wrap; }
+  .word.parsed { color: var(--bs-primary-text-emphasis); }
+  /* A word is a column: the word itself (.w), then its comment (.note). The baseline of an
+     inline-flex box is its first item's, so the word stays on the line. */
+  .word { display: inline-flex; flex-direction: column; }
+  .word .w { line-height: 1.3; }
+  /* Syntactic role: the Russian school underlining convention. */
+  .word[data-role] .w { text-decoration-line: underline; text-decoration-thickness: 2px; text-underline-offset: .25em; }
+  .word[data-role="subject"]   .w { text-decoration-style: solid; }
+  .word[data-role="predicate"] .w { text-decoration-style: double; }
+  .word[data-role="object"]    .w { text-decoration-style: dashed; }
+  .word[data-role="attribute"] .w { text-decoration-style: wavy; text-decoration-thickness: 1.5px; }
+  /* No dash-dot in text-decoration-style — draw it as a gradient under the word. */
+  .word[data-role="adverbial"] .w {
+    text-decoration: none;
+    background: repeating-linear-gradient(to right, currentColor 0 .45em, transparent .45em .6em,
+                currentColor .6em .7em, transparent .7em .85em) left 92% / 100% 2px no-repeat;
+  }
+  /* The comment wraps to the word's width: contain: inline-size keeps it from widening
+     the column, and the flex column stretches it to the word. */
+  .word .note {
+    contain: inline-size; margin-top: .6rem; overflow-wrap: anywhere;
+    font: .5em/1.15 var(--bs-body-font-family); color: var(--bs-secondary-color);
+  }
+  dialog { width: min(32rem, calc(100vw - 2rem)); border: 1px solid var(--bs-border-color); }
+  dialog::backdrop { background: rgb(0 0 0 / .4); }
+  /* PDF = the browser's print dialog, "Save as PDF". Text stays text, fonts and underlines as on screen. */
+  /* Any author margin box on an edge hides Chrome's default header/footer on that edge
+     (Chrome 131+): date and title at the top, URL at the bottom. Page number kept, our own. */
+  @page {
+    margin: 15mm;
+    @top-center { content: ""; }
+    @bottom-right { content: counter(page) " / " counter(pages); font: 9pt sans-serif; color: #666; }
+  }
+  @media print {
+    nav, .no-print, dialog { display: none !important; }
+    body, .card { background: none !important; }
+    .card, .list-group { box-shadow: none !important; }
+    main { max-width: none !important; padding: 0 !important; }
+    .list-group { break-inside: avoid; }
+    .w { print-color-adjust: exact; -webkit-print-color-adjust: exact; }   /* keeps the dash-dot gradient */
+  }
+</style>
+</head>
+<body class="bg-body-tertiary">
+
+<nav class="navbar bg-body border-bottom sticky-top">
+  <div class="container-lg">
+    <a class="navbar-brand mb-0 h1 fs-6 text-decoration-none" href="texts.html">← Texts</a>
+    <span class="fw-semibold text-truncate ms-2">Text parsing</span>
+    <button id="themeToggle" class="btn btn-sm btn-outline-secondary ms-2" type="button" aria-label="Toggle theme">🌗</button>
+  </div>
+</nav>
+
+<main class="container-lg py-3 py-md-4" style="max-width: 46rem;">
+
+  <!-- ?edit=new or ?edit=<id> -->
+  <form id="form" class="d-none">
+    <label for="body" class="form-label">Text</label>
+    <textarea id="body" class="form-control greek fs-5 mb-3" rows="12" required></textarea>
+    <button class="btn btn-primary" type="submit">Save</button>
+    <a class="btn btn-link text-secondary" href="texts.html">Cancel</a>
+  </form>
+
+  <!-- ?id=<id> -->
+  <section id="view" class="d-none">
+    <div id="legend" class="fs-5 mb-3 px-1" aria-label="Syntax legend"></div>
+    <p class="text-secondary small mb-2 no-print">Click a word to parse it.</p>
+    <div class="card shadow-sm mb-3">
+      <div id="text" class="card-body greek"></div>
+    </div>
+    <div class="d-flex gap-2 mb-4 no-print">
+      <a id="btnEdit" class="btn btn-sm btn-outline-secondary" href="#">Edit text</a>
+      <button id="btnPdf" class="btn btn-sm btn-outline-secondary" type="button">Export PDF</button>
+    </div>
+    <h2 class="h6 text-uppercase text-secondary fw-semibold mb-2 ps-1">Parsed words</h2>
+    <p id="noParses" class="text-secondary small">Nothing parsed yet.</p>
+    <div id="parses"></div>
+  </section>
+
+  <p id="missing" class="text-secondary d-none">Text not found. <a href="texts.html">Back to list</a></p>
+</main>
+
+<dialog id="dlg" class="bg-body text-body rounded-3 shadow p-0">
+  <div class="p-3">
+    <div class="d-flex align-items-center justify-content-between mb-3">
+      <span id="dlgWord" class="greek fs-4"></span>
+      <button id="dlgClose" type="button" class="btn-close" aria-label="Close"></button>
+    </div>
+    <div id="rows"></div>
+    <label for="lemma" class="small text-secondary mb-1 mt-2">Dictionary form</label>
+    <input id="lemma" class="form-control greek mb-2" autocomplete="off" placeholder="λόγος, -ου, ὁ">
+    <label for="gloss" class="small text-secondary mb-1">Translation</label>
+    <input id="gloss" class="form-control" autocomplete="off">
+    <h3 class="h6 text-uppercase text-secondary fw-semibold mt-3 mb-2 pt-3 border-top">Syntax</h3>
+    <div id="syn"></div>
+    <label for="note" class="small text-secondary mb-1">Comment</label>
+    <input id="note" class="form-control" autocomplete="off">
+    <div class="d-flex gap-2 mt-3">
+      <button id="dlgSave" type="button" class="btn btn-primary">Save</button>
+      <button id="dlgDel" type="button" class="btn btn-outline-danger">Remove parse</button>
+    </div>
+  </div>
+</dialog>
+
+<script src="../assets/texts.js"></script>
+<script>
+const $ = id => document.getElementById(id);
+const q = new URLSearchParams(location.search);
+const edit = q.get('edit'), id = q.get('id');
+const show = el => $(el).classList.remove('d-none');
+
+// Features and their values.
+const F = {
+  vform:  ['Form',       ['finite', 'participle', 'infinitive']],
+  tense:  ['Tense',      ['pres.', 'impf.', 'fut.', 'aor.', 'perf.', 'plpf.']],
+  mood:   ['Mood',       ['ind.', 'subj.', 'opt.', 'impv.']],
+  voice:  ['Voice',      ['act.', 'mid.', 'pass.', 'mid./pass.']],
+  person: ['Person',     ['1st', '2nd', '3rd']],
+  case:   ['Case',       ['Nom.', 'Gen.', 'Dat.', 'Acc.', 'Voc.']],
+  number: ['Number',     ['sg.', 'pl.']],
+  gender: ['Gender',     ['masc.', 'fem.', 'neut.']],
+  gov:    ['Governs',    ['+ Gen.', '+ Dat.', '+ Acc.']],
+};
+// Features asked for each part of speech; for a verb, also for each form.
+const POS = {
+  noun:        ['case', 'number', 'gender'],
+  adjective:   ['case', 'number', 'gender'],
+  article:     ['case', 'number', 'gender'],
+  pronoun:     ['person', 'case', 'number', 'gender'],
+  verb:        ['vform'],
+  adverb: [], preposition: ['gov'], conjunction: [], particle: [],
+};
+const VFORM = {
+  finite:     ['tense', 'mood', 'voice', 'person', 'number'],
+  participle: ['tense', 'voice', 'case', 'number', 'gender'],
+  infinitive: ['tense', 'voice'],
+};
+const keys = p => (POS[p.pos] || []).concat(p.pos === 'verb' && VFORM[p.vform] || []);
+const fmt = p => [[p.pos].concat(keys(p).map(k => p[k])).filter(Boolean).join(', '),
+                  [p.role, p.note].filter(Boolean).join(': ')].filter(Boolean).join(' · ');
+const ROLES = ['subject', 'predicate', 'object', 'attribute', 'adverbial'];
+
+if (edit) {
+  const t = edit === 'new' ? null : Texts.get(edit);
+  if (edit !== 'new' && !t) show('missing');
+  else {
+    show('form');
+    if (t) $('body').value = t.body;
+    $('form').onsubmit = e => {
+      e.preventDefault();
+      location.href = 'text.html?id=' + Texts.put(t && t.id, $('body').value);
+    };
+  }
+} else if (!Texts.get(id)) show('missing');
+else {
+  show('view');
+  $('btnEdit').href = 'text.html?edit=' + id;
+  document.title = Texts.title(Texts.get(id));   // the PDF's default file name
+  $('btnPdf').onclick = () => print();
+  // Print in the light theme whatever is on screen; Ctrl+P goes through here too.
+  let theme;
+  addEventListener('beforeprint', () => { theme = document.documentElement.dataset.bsTheme; document.documentElement.dataset.bsTheme = 'light'; });
+  addEventListener('afterprint', () => { document.documentElement.dataset.bsTheme = theme; });
+  $('legend').innerHTML = ROLES.map(r => '<span class="word" data-role="' + r + '"><span class="w">' + r + '</span></span>').join('');
+  // A word: letters with diacritics, optionally an elision apostrophe (δι’).
+  const WORD = /[\p{L}\p{M}]+[’ʼ']?/gu;
+  let words = [], cur = {}, curI = 0;
+
+  // ponytail: a parse is tied to the word's position; after the text is edited, parses whose
+  // word changed are simply hidden. Re-anchor them by word if that ever matters.
+  const parsed = (t, i) => t.parses && t.parses[i] && t.parses[i].w === words[i] ? t.parses[i] : null;
+
+  function render() {
+    const t = Texts.get(id), box = $('text');
+    box.innerHTML = ''; words = [];
+    const starts = [];
+    let last = 0;
+    for (const m of t.body.matchAll(WORD)) {
+      box.append(t.body.slice(last, m.index));
+      const s = document.createElement('span');
+      s.className = 'word'; s.dataset.i = words.length;
+      s.innerHTML = '<span class="w"></span>'; s.firstChild.textContent = m[0];
+      words.push(m[0]); starts.push(m.index);
+      box.append(s);
+      last = m.index + m[0].length;
+    }
+    box.append(t.body.slice(last));
+
+    // Sentences end at . ; ; ! ? — the ano teleia (·) is a colon, not an end.
+    const sents = [...t.body.matchAll(/[^.;;!?]+[.;;!?]*/g)].map(m => [m.index, m.index + m[0].length]);
+    const list = $('parses'); list.innerHTML = '';
+    let group = null, groupSent = -1;
+    words.forEach((w, i) => {
+      const p = parsed(t, i);
+      if (!p) return;
+      const span = box.querySelector('[data-i="' + i + '"]');
+      if (p.pos) span.classList.add('parsed');
+      if (p.role) span.dataset.role = p.role;
+      if (p.note) {
+        const n = document.createElement('span');
+        n.className = 'note'; n.textContent = p.note;
+        span.append(n);
+      }
+      const s = sents.findIndex(([a, b]) => starts[i] >= a && starts[i] < b);
+      if (s !== groupSent) {
+        groupSent = s;
+        group = document.createElement('div');
+        group.className = 'list-group shadow-sm mb-3';
+        const head = document.createElement('div');
+        head.className = 'list-group-item bg-body-secondary greek fs-5';
+        head.textContent = t.body.slice(...sents[s]).trim();
+        group.append(head);
+        list.append(group);
+      }
+      const a = document.createElement('button');
+      a.type = 'button'; a.className = 'list-group-item list-group-item-action';
+      a.innerHTML = '<span class="greek fs-5 me-2"></span><span class="text-secondary"></span>' +
+                    '<div class="small"><span class="greek me-2"></span><span></span></div>';
+      const [word, parse, lemma, gloss] = a.querySelectorAll('span');
+      word.textContent = w; parse.textContent = fmt(p);
+      lemma.textContent = p.lemma || ''; gloss.textContent = p.gloss ? '— ' + p.gloss : '';
+      a.onclick = () => open(i);
+      group.append(a);
+    });
+    $('noParses').classList.toggle('d-none', list.children.length > 0);
+  }
+
+  function row(label, opts, k, parent = $('rows')) {
+    const d = document.createElement('div');
+    d.className = 'mb-2';
+    d.innerHTML = '<div class="small text-secondary mb-1"></div><div class="d-flex flex-wrap gap-1"></div>';
+    d.firstChild.textContent = label;
+    opts.forEach(o => {
+      const b = document.createElement('button');
+      b.type = 'button'; b.textContent = o;
+      b.className = 'btn btn-sm ' + (cur[k] === o ? 'btn-primary' : 'btn-outline-secondary');
+      b.onclick = () => { cur[k] = cur[k] === o ? undefined : o; draw(); };
+      d.lastChild.append(b);
+    });
+    parent.append(d);
+  }
+  function draw() {
+    $('rows').innerHTML = '';
+    row('Part of speech', Object.keys(POS), 'pos');
+    keys(cur).forEach(k => row(F[k][0], F[k][1], k));
+    $('syn').innerHTML = '';
+    row('Role', ROLES, 'role', $('syn'));
+  }
+  function open(i) {
+    const p = parsed(Texts.get(id), i);
+    curI = i; cur = Object.assign({}, p);
+    $('dlgWord').textContent = words[i];
+    $('lemma').value = cur.lemma || '';
+    $('gloss').value = cur.gloss || '';
+    $('note').value = cur.note || '';
+    $('dlgDel').classList.toggle('d-none', !p);
+    draw();
+    $('dlg').showModal();
+  }
+  function done(p) { Texts.parse(id, curI, p); $('dlg').close(); render(); }
+
+  $('text').onclick = e => { const w = e.target.closest('.word'); if (w) open(+w.dataset.i); };
+  $('dlgClose').onclick = () => $('dlg').close();
+  $('dlgDel').onclick = () => done(null);
+  $('dlgSave').onclick = () => {
+    const p = { w: words[curI] };
+    ['pos', 'role'].concat(keys(cur)).forEach(k => { if (cur[k]) p[k] = cur[k]; });   // stale features dropped
+    ['lemma', 'gloss', 'note'].forEach(k => { const v = $(k).value.trim(); if (v) p[k] = v; });
+    done(Object.keys(p).length > 1 ? p : null);   // nothing filled in = no parse
+  };
+  render();
+}
+</script>
+</body>
+</html>
